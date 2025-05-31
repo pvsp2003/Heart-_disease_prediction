@@ -1,0 +1,416 @@
+{% load static %}
+{% load form_extras %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heart Disease Predictor</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --primary-dark: #2980b9;
+            --secondary-color: #2ecc71;
+            --danger-color: #e74c3c;
+            --text-color: white;
+            --light-gray: #f5f6fa;
+            --border-color: #dcdde1;
+            --shadow-color: rgba(0, 0, 0, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+    font-family: 'Inter', sans-serif;
+    color: var(--text-color);
+    line-height: 1.6;
+    min-height: 100vh;
+    position: relative;
+    padding-top: 3rem; 
+    padding-right: 3rem; 
+    padding-bottom: 3rem;
+}
+
+        .background-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('{% static "images\\bg.jpg" %}');
+            background-size: cover;
+            background-position: center;
+            z-index: -2;
+        }
+
+        .overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+
+.container {
+    width: 55%;
+    margin-left: auto;
+    margin-right: 0;
+    padding: 2rem; 
+    background: rgba(255, 255, 255, 0.15);
+    border-radius: 16px;
+    box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.2);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+}
+
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: white;
+        }
+
+.card {
+    background: transparent; 
+    box-shadow: none;
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text-color);
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.8rem;
+            border: 1px solid var(--border-color);
+            border-radius: 6px;
+            font-size: 1rem;
+            transition: border-color 0.3s, box-shadow 0.3s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 2rem;
+        }
+
+        .primary-btn,
+        .secondary-btn {
+            padding: 0.8rem 1.5rem;
+            border: none;
+            border-radius: 6px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .primary-btn {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .secondary-btn {
+            background: white;
+            color: var(--primary-color);
+            border: 2px solid var(--primary-color);
+        }
+
+        .primary-btn:hover,
+        .secondary-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px var(--shadow-color);
+        }
+
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .popup.show {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .popup-content {
+            background: white;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .popup-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .popup-header h2 {
+            color: var(--primary-color);
+            font-size: 1.5rem;
+            margin: 0;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: white;
+            padding: 0.5rem;
+        }
+
+        .popup-body {
+            padding: 2rem;
+            text-align: center;
+        }
+
+        .result-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 2rem;
+}
+
+        .result-item {
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+
+        .result-label {
+            font-weight: 600;
+            margin-right: 0.5rem;
+            color: black;
+        }
+
+        .result-value {
+            color: black;
+        }
+
+        .popup-footer {
+            padding: 1.5rem;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .card {
+                padding: 1.5rem;
+            }
+
+            .header h1 {
+                font-size: 2rem;
+            }
+
+            .form-actions {
+                flex-direction: column;
+            }
+
+            .primary-btn,
+            .secondary-btn {
+                width: 100%;
+            }
+        }
+        input[type="radio"] {
+    accent-color: var(--primary-color);
+    transform: scale(1.2);
+    cursor: pointer;
+}
+
+.radio-label {
+    font-weight: 400;
+    color: white;
+    cursor: pointer;
+}
+
+
+    </style>
+</head>
+<body>
+    <div class="background-container">
+        <div class="overlay"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1>Heart Disease Predictor</h1>
+            <p class="subtitle">Enter patient health information for a risk assessment</p>
+        </div>
+
+        <div class="card">
+            {% load form_extras %}
+
+            <form method="post">
+                {% csrf_token %}
+                
+                {% for field in form %}
+                    <div class="form-group">
+                        <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                        
+                        {% if field|is_radio %}
+                            <div style="display: flex; gap: 2rem; align-items: center;">
+                                {% for subwidget in field %}
+                                    <label class="radio-label" for="{{ subwidget.id_for_label }}" style="display: flex; align-items: center; gap: 0.5rem;">
+                                        {{ subwidget.tag }}
+                                        {{ subwidget.choice_label }}
+                                    </label>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ field }}
+                        {% endif %}
+                        
+                        {% if field.errors %}
+                            <div class="error">{{ field.errors }}</div>
+                        {% endif %}
+                    </div>
+                {% endfor %}
+
+                <div class="form-group">
+                    <label for="email">Enter your email to receive the report:</label>
+                    <input type="email" name="email" id="email" >
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" name="submit" class="primary-btn">Predict Risk</button>
+                    <button type="submit" name="send_report" class="secondary-btn">Predict & Email Report</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+
+
+    {% if result %}
+    <div id="resultPopup" class="popup show">
+        <div class="popup-content">
+            <div class="popup-header">
+                <h2>Prediction Results</h2>
+                <button id="closePopup" class="close-btn">&times;</button>
+            </div>
+            <div class="popup-body">
+                <div class="result-container">
+                    <div class="result-item">
+                        <span class="result-label">Prediction:</span>
+                        <span class="result-value">{{ result }}</span>
+                    </div>
+                    <div class="result-item">
+                        <span class="result-label">Confidence:</span>
+                        <span class="result-value">{{ confidence }}</span>
+                    </div>
+                </div>
+            </div>
+            <div class="popup-footer">
+                <button id="okButton" class="primary-btn">OK</button>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+ <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const popup = document.getElementById('resultPopup');
+        const closePopup = document.getElementById('closePopup');
+        const okButton = document.getElementById('okButton');
+        const emailInput = document.getElementById('email');
+        const predictBtn = document.querySelector('button[name="submit"]');
+        const emailBtn = document.querySelector('button[name="send_report"]');
+        const form = document.querySelector('form');
+
+        function hidePopup() {
+            popup.classList.remove('show');
+            window.location.reload();
+        }
+
+        if (closePopup) closePopup.addEventListener('click', hidePopup);
+        if (okButton) okButton.addEventListener('click', hidePopup);
+        if (popup) {
+            popup.addEventListener('click', (e) => {
+                if (e.target === popup) hidePopup();
+            });
+        }
+
+        // Handle form submission conditionally
+        predictBtn.addEventListener('click', () => {
+            emailInput.removeAttribute('required');
+        });
+
+        emailBtn.addEventListener('click', () => {
+            emailInput.setAttribute('required', 'required');
+        });
+    });
+</script>
+
+</body>
+</html>
