@@ -68,19 +68,13 @@ A Django-based web application that predicts the likelihood of heart disease usi
    source venv/bin/activate  # On Windows: venv\Scripts\activate
    ```
 
-3. **Install Dependencies**
-
-   ```bash
-   pip install -r requirements.txt
-   ```
-
-4. **Run the Django Server**
+3. **Run the Django Server**
 
    ```bash
    python manage.py runserver
    ```
 
-5. **Access the App**
+4. **Access the App**
    Open `http://127.0.0.1:8000/` in your browser.
 
 ---
