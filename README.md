@@ -34,7 +34,21 @@ A Django-based web application that predicts the likelihood of heart disease usi
 
 ## 📸 Screenshots
 
-> *(Add screenshots of the UI form, sample PDF report, and SHAP pie chart here)*
+> ### 🧾 User Input Form
+![User Input Form](screenshots/UI.png)
+
+### 📈 Prediction Result on Website
+![Prediction Result](screenshots/prediction.png)
+
+### 📬 Email with PDF Report
+![Email Screenshot](screenshots/mail.png)
+
+### 📄 Sample PDF Report
+![Sample PDF Report](screenshots/pdf.png)
+
+### 🥧 SHAP Feature Importance Pie Chart
+![SHAP Pie Chart](screenshots/shap.png)
+
 
 ---
 
